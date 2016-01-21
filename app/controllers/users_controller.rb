@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!, only: [:edit, :update, :destroy]
-  before_action :set_user, only: [:edit, :update, :destroy]
+  before_action :set_user, only: [:update, :destroy]
 
   def new
     @user = User.new
@@ -23,6 +23,7 @@ class UsersController < ApplicationController
   end
 
   def edit
+    @user = User.where(id: current_user.id).includes(:addresses => :city).first
     addresses = @user.addresses
     addresses.build
     addresses.last.build_city
