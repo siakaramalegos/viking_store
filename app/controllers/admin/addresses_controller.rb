@@ -22,16 +22,16 @@ class Admin::AddressesController < AdminController
 
   def new
     @address = @user.addresses.new
+    @address.build_city
   end
 
   def create
     @address = @user.addresses.new(address_params)
-    city = City.find_or_create_by(name: params[:address][:city_name])
-    @address.city_id = city.id
 
     if @address.save
       redirect_to admin_user_addresses_url(@user), notice: 'Address successfully created.'
     else
+      flash.now[:alert] = 'Address could not be saved - see errors below.'
       render :new
     end
   end
@@ -40,13 +40,10 @@ class Admin::AddressesController < AdminController
   end
 
   def update
-    @address.assign_attributes(address_params)
-    city = City.find_or_create_by(name: params[:address][:city_name])
-    @address.city_id = city.id
-
-    if @address.save
+    if @address.update(address_params)
       redirect_to admin_user_addresses_url(@user), notice: 'Address successfully saved.'
     else
+      flash.now[:alert] = 'Address could not be saved - see errors below.'
       render :edit
     end
   end
@@ -78,6 +75,6 @@ class Admin::AddressesController < AdminController
   end
 
   def address_params
-    params.require(:address).permit(:street_address, :secondary_address, :state_id, :zip_code)
+    params.require(:address).permit(:street_address, :secondary_address, :state_id, :zip_code, {city_attributes: [:name]})
   end
 end

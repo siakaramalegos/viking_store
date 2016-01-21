@@ -30,13 +30,15 @@
     </div>
   </div>
 
-  <div class="form-group">
-    <%= f.label :city_name, class: "col-sm-2 control-label" %>
-    <%# field_with_errors(@address, :city_name) %>
-    <div class="col-sm-8">
-      <%= f.text_field :city_name, class: "form-control", placeholder: "New Orleans" %>
+  <%= f.fields_for :city do |city_fields| %>
+    <div class="form-group">
+      <%= city_fields.label :name, 'City', class: "col-sm-2 control-label" %>
+      <%= field_with_errors(city_fields.object, :name) %>
+      <div class="col-sm-8">
+        <%= city_fields.text_field :name, class: "form-control", placeholder: "New Orleans" %>
+      </div>
     </div>
-  </div>
+  <% end %>
 
   <div class="form-group">
     <%= f.label :state_id, class: "col-sm-2 control-label" %>
