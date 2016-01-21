@@ -1,32 +1,36 @@
-<%= form_for @user do |user_fields| %>
+<%= form_for @user, url: user_path do |user_fields| %>
   <div class="row">
     <div class="col-sm-6">
       <%= user_fields.fields_for :addresses do |address_fields| %>
-      <%# TODO: add validation errors to address fields  %>
         <div class="panel panel-default">
           <div class="panel-body">
             <h4 class="text-center text-muted">Saved Address <%= address_fields.index + 1 %><%= ' (optional)' if address_fields.object.id.nil? %></h4>
 
             <div class="form-group">
               <%= address_fields.label :street_address, 'Street Address' %>
-              <%= field_with_errors(@user, :email) %>
+              <%= field_with_errors(address_fields.object, :street_address) %>
               <%= address_fields.text_field :street_address, class: 'form-control', placeholder: '1000 St Charles Ave' %>
             </div>
 
             <div class="form-group">
               <%= address_fields.label :secondary_address, 'Address line 2 (optional)' %>
+              <%= field_with_errors(address_fields.object, :secondary_address) %>
               <%= address_fields.text_field :secondary_address, class: 'form-control', placeholder: 'Apt A' %>
             </div>
 
-            <div class="form-group">
-              <%= address_fields.label :city_name, 'City' %>
-              <%= address_fields.text_field :city_name, class: 'form-control', placeholder: 'New Orleans' %>
-            </div>
+            <%= address_fields.fields_for :city do |city_fields| %>
+              <div class="form-group">
+                <%= city_fields.label :name, 'City' %>
+                <%= field_with_errors(city_fields.object, :name) %>
+                <%= city_fields.text_field :name, class: 'form-control', placeholder: 'New Orleans' %>
+              </div>
+            <% end %>
 
             <div class="row">
               <div class="col-xs-6">
                 <div class="form-group">
                   <%= address_fields.label :state_id %>
+                  <%= field_with_errors(address_fields.object, :state_id) %>
                   <%= address_fields.collection_select :state_id, State.all, :id, :abbreviation, {prompt: 'Select a state'}, {class: 'form-control'} %>
                 </div>
               </div>
@@ -34,6 +38,7 @@
               <div class="col-xs-6">
                 <div class="form-group">
                   <%= address_fields.label :zip_code %>
+                  <%= field_with_errors(address_fields.object, :zip_code) %>
                   <%= address_fields.text_field :zip_code, class: 'form-control', placeholder: '70115' %>
                 </div>
               </div>
@@ -73,9 +78,9 @@
           </div>
 
           <div class="form-group">
-          <%# TODO: Add confirmation %>
-            <%= user_fields.label :confirm_email, "Confirm Email" %>
-            <%= field_with_errors(@user, :confirm_email) %>
+          <%# TODO: Add email confirmation %>
+            <%= user_fields.label :email, "Confirm Email" %>
+            <%= field_with_errors(@user, :email) %>
             <%= user_fields.text_field :email, class: 'form-control' %>
           </div>
 
@@ -86,7 +91,7 @@
           </div>
 
           <div class="form-group">
-          <%# TODO: Add confirmation %>
+          <%# TODO: Add password confirmation %>
             <%= user_fields.label :password, "Confirm Password" %>
             <%= field_with_errors(@user, :password) %>
             <%= user_fields.password_field :password, class: 'form-control' %>

@@ -6,15 +6,12 @@ class UsersController < ApplicationController
     @user = User.new
     @user.addresses.build
     @user.addresses.build
+    addresses = @user.addresses
+    addresses.each { |address| address.build_city }
   end
 
   def create
     @user = User.new(user_params)
-
-    @user.addresses.each_with_index do |address, index|
-      city = City.find_or_create_by(name: params[:user][:addresses_attributes][index.to_s][:city_name])
-      address.city_id = city.id
-    end
 
     if @user.save
       sign_in(@user)
@@ -25,20 +22,14 @@ class UsersController < ApplicationController
     end
   end
 
-  # TODO: change edit, show, delete path to not have user_id param
   def edit
-    @user.addresses.build
+    addresses = @user.addresses
+    addresses.build
+    addresses.last.build_city
   end
 
   def update
-    @user.update(user_params)
-
-    @user.addresses.each_with_index do |address, index|
-      city = City.find_or_create_by(name: params[:user][:addresses_attributes][index.to_s][:city_name])
-      address.city_id = city.id
-    end
-
-    if @user.save
+    if @user.update(user_params)
       redirect_to products_index_url, notice: "Your user information was successfully updated!"
     else
       flash.now[:alert] = "There was a problem submitting your form.  See below for errors."
@@ -62,6 +53,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:email, :first_name, :last_name, :phone_number, :billing_id, :shipping_id, { :addresses_attributes => [:id, :street_address, :secondary_address, :state_id, :zip_code, :_destroy] })
+    params.require(:user).permit(:email, :first_name, :last_name, :phone_number, :billing_id, :shipping_id, { :addresses_attributes => [:id, :street_address, :secondary_address, :state_id, :zip_code, :_destroy, city_attributes: [:name]] })
   end
 end
