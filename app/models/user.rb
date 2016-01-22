@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
   end
 
   def last_order
-    self.orders.order("checkout_date DESC").limit(1).first
+    self.orders.order("orders.created_at DESC").limit(1).first
   end
 
   # Join clause to join users with order_totals table

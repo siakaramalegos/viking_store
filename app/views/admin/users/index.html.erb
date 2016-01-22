@@ -38,7 +38,7 @@
             <%= @counts[user.id] ? @counts[user.id] : 0 %>
           <% end %>
         </td>
-        <td><%= user.last_order.try(:checkout_date).try(:stamp, '12/31/2015') %></td>
+        <td><%= user.last_order.try(:created_at).try(:stamp, '12/31/2015') %></td>
         <td><%= link_to 'show', admin_user_path(user) %></td>
         <td><%= link_to 'edit', edit_admin_user_path(user) %></td>
         <td><%= link_to 'delete', admin_user_path(user), method: :delete, data: { confirm: 'Are you sure?' } %></td>
