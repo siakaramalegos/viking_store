@@ -54,7 +54,7 @@ namespace :db do
     end
     days_ago_arr.shuffle!
 
-    User.populate(MULTIPLIER * 22) do |user|
+    User.populate(MULTIPLIER * 23) do |user|
       user.email = Faker::Internet.email
       user.first_name = Faker::Name.first_name
       user.last_name = Faker::Name.last_name
@@ -119,6 +119,7 @@ namespace :db do
       order.shipping_id = address.id
       order.billing_id = address.id
       order.credit_card_id = CreditCard.find_by_user_id(user.id)
+      order.created_at = Faker::Time.between(DateTime.now - days_ago_arr.pop, DateTime.now)
 
       OrderContent.populate(1..5) do |item|
         product = Product.find(rand(product_range))
