@@ -41,6 +41,11 @@ body {
 .jumbo-header {
   margin-bottom: 0;
   padding: 58px 0;
+  background-image: image-url('norway.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  height: 100%;
 }
 
 .jumbo-subtitle {
