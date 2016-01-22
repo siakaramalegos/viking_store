@@ -1,6 +1,6 @@
 class Admin::OrdersController < AdminController
   layout 'admin'
-  before_action :set_user, except: [:all_orders]
+  before_action :set_user, except: [:all_orders, :edit, :new]
   before_action :set_order, only: [:show, :update, :destroy]
   rescue_from ActiveRecord::RecordNotFound, with: :invalid_params
 
@@ -23,6 +23,7 @@ class Admin::OrdersController < AdminController
   end
 
   def new
+    @user = User.where(id: params[:user_id]).includes(:addresses => [:city, :state]).first
     @order = @user.orders.new
   end
 

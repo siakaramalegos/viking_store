@@ -10,7 +10,7 @@
 
   <dt>Date Placed:</dt>
   <dd>
-    <% if @order.created_at %>
+    <% if @order.persisted? %>
       <%= @order.created_at.stamp('12/31/2015') %>
     <% else %>
       N/A
