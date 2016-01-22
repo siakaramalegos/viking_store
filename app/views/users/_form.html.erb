@@ -46,13 +46,19 @@
 
             <!-- TODO: associate radios with future address ids -->
             <div class="form-group">
-              <%= user_fields.radio_button :shipping_id, address_fields.object.id %>
-              <%= user_fields.label :shipping_id, 'Default Shipping Address' %>
+              <%= label_tag do %>
+                <% selected = (@user.shipping_id == address_fields.object.id if address_fields.object.persisted?) %>
+                <%= radio_button_tag :default_shipping_index, address_fields.options[:child_index], selected %>
+                Default Shipping Address
+              <% end %>
             </div>
 
             <div class="form-group">
-              <%= user_fields.radio_button :billing_id, address_fields.object.id %>
-              <%= user_fields.label :billing_id, 'Default Billing Address' %>
+              <%= label_tag do %>
+                <% selected = (@user.billing_id == address_fields.object.id if address_fields.object.persisted?) %>
+                <%= radio_button_tag :default_billing_index, address_fields.options[:child_index], selected %>
+                Default Billing Address
+              <% end %>
             </div>
 
             <% if address_fields.object.persisted? %>
