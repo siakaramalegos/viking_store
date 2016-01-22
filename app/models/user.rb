@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
 
   validates :first_name, :last_name, :email, presence: true, length: {in: 1..64}
 
-  # TODO: validates_confirmation_of for email and
+  validates_confirmation_of :email
 
   scope :day_range, -> (start_day, end_day) {where("created_at >= ? AND created_at <= ?", start_day.days.ago, end_day.days.ago)}
 

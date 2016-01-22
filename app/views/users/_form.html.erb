@@ -85,9 +85,9 @@
 
           <div class="form-group">
           <%# TODO: Add email confirmation %>
-            <%= user_fields.label :email, "Confirm Email" %>
-            <%= field_with_errors(@user, :email) %>
-            <%= user_fields.text_field :email, class: 'form-control' %>
+            <%= user_fields.label :email_confirmation, "Confirm Email" %>
+            <%= field_with_errors(@user, :email_confirmation) %>
+            <%= user_fields.text_field :email_confirmation, class: 'form-control' %>
           </div>
 
           <div class="form-group">
@@ -98,9 +98,9 @@
 
           <div class="form-group">
           <%# TODO: Add password confirmation %>
-            <%= user_fields.label :password, "Confirm Password" %>
-            <%= field_with_errors(@user, :password) %>
-            <%= user_fields.password_field :password, class: 'form-control' %>
+            <%= user_fields.label :password_confirmation, "Confirm Password" %>
+            <%= field_with_errors(@user, :password_confirmation) %>
+            <%= user_fields.password_field :password_confirmation, class: 'form-control' %>
           </div>
 
           <div class="form-group">
