@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160103171809) do
+ActiveRecord::Schema.define(version: 20160122191645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,14 @@ ActiveRecord::Schema.define(version: 20160103171809) do
   add_index "addresses", ["city_id"], name: "index_addresses_on_city_id", using: :btree
   add_index "addresses", ["state_id"], name: "index_addresses_on_state_id", using: :btree
   add_index "addresses", ["user_id"], name: "index_addresses_on_user_id", using: :btree
+
+  create_table "carts", force: :cascade do |t|
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "carts", ["user_id"], name: "index_carts_on_user_id", using: :btree
 
   create_table "categories", force: :cascade do |t|
     t.string   "name",        null: false
@@ -66,8 +74,10 @@ ActiveRecord::Schema.define(version: 20160103171809) do
     t.decimal  "price",                  null: false
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.integer  "cart_id"
   end
 
+  add_index "order_contents", ["cart_id"], name: "index_order_contents_on_cart_id", using: :btree
   add_index "order_contents", ["order_id"], name: "index_order_contents_on_order_id", using: :btree
   add_index "order_contents", ["product_id"], name: "index_order_contents_on_product_id", using: :btree
 
@@ -119,7 +129,9 @@ ActiveRecord::Schema.define(version: 20160103171809) do
   add_foreign_key "addresses", "cities"
   add_foreign_key "addresses", "states"
   add_foreign_key "addresses", "users"
+  add_foreign_key "carts", "users"
   add_foreign_key "credit_cards", "users"
+  add_foreign_key "order_contents", "carts"
   add_foreign_key "order_contents", "orders"
   add_foreign_key "order_contents", "products"
   add_foreign_key "orders", "addresses", column: "billing_id"
