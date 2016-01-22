@@ -11,7 +11,6 @@ class Address < ActiveRecord::Base
   has_many :bill_to_orders, foreign_key: :billing_id, class_name: 'Order', dependent: :nullify
 
   validates :street_address, :state_id, :zip_code, presence: true
-  validates_associated :city
 
   def city_state_zip
     "#{city.name}, #{state.abbreviation}  #{zip_code}"

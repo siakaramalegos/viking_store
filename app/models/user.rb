@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   before_destroy :delete_carts
 
   has_many :addresses, dependent: :destroy
-  accepts_nested_attributes_for :addresses, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: proc { |attributes| deep_blank?(attributes) }
 
   has_many :credit_cards, dependent: :destroy
   has_many :orders, dependent: :nullify
@@ -16,11 +16,22 @@ class User < ActiveRecord::Base
   belongs_to :default_billing_address, foreign_key: :billing_id, class_name: 'Address'
 
   validates :first_name, :last_name, :email, presence: true, length: {in: 1..64}
-  validates_associated :addresses
 
   # TODO: validates_confirmation_of for email and
 
   scope :day_range, -> (start_day, end_day) {where("created_at >= ? AND created_at <= ?", start_day.days.ago, end_day.days.ago)}
+
+  # Recursively traverse nested attributes to define is all values blank.
+  # Additionaly considers that value with _destroy key is always blank.
+  # https://github.com/rails/rails/pull/23001
+  def self.deep_blank?(hash)
+    hash.each do |key, value|
+      next if key == '_destroy'
+      any_blank = value.is_a?(Hash) ? deep_blank?(value) : value.blank?
+      return false unless any_blank
+    end
+    true
+  end
 
   def name
     "#{first_name} #{last_name}"

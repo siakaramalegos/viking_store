@@ -24,10 +24,11 @@ class UsersController < ApplicationController
   end
 
   def edit
+    # TODO: fix blank address validation errors
     @user = User.where(id: current_user.id).includes(:addresses => :city).first
     addresses = @user.addresses
-    # addresses.build
-    # addresses.last.build_city
+    addresses.build
+    addresses.last.build_city
   end
 
   def update
@@ -80,6 +81,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:email, :first_name, :last_name, :phone_number, { :addresses_attributes => [:id, :street_address, :secondary_address, :state_id, :zip_code, :_destroy, city_attributes: [:name]] })
+    params.require(:user).permit(:email, :first_name, :last_name, :phone_number, { :addresses_attributes => [:id, :street_address, :secondary_address, :state_id, :zip_code, :_destroy, {city_attributes: [:name] } ]})
   end
 end
