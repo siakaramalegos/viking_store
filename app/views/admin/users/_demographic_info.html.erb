@@ -43,7 +43,7 @@
 <%= link_to "View Saved Addresses", admin_user_addresses_path(@user) %><br>
 <%= link_to "View All Orders", admin_user_orders_path(@user) %><br>
 
-<% unless @user.orders.carts.empty? %>
+<% unless @user.carts.empty? %>
   <%= link_to "View Unplaced Order (Cart)", "#" %>
 <% else %>
   View Unplaced Order (Cart)

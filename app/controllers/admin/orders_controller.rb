@@ -1,7 +1,7 @@
 class Admin::OrdersController < AdminController
   layout 'admin'
   before_action :set_user, except: [:all_orders]
-  before_action :set_order, only: [:show, :edit, :update, :destroy]
+  before_action :set_order, only: [:show, :update, :destroy]
   rescue_from ActiveRecord::RecordNotFound, with: :invalid_params
 
   def all_orders
@@ -16,9 +16,10 @@ class Admin::OrdersController < AdminController
   end
 
   def show
+    # TODO: change new order process to first create a cart then convert it to an order once payment is made.
     @card = @order.credit_card
-    @contents = @order.order_contents
-    @order.checkout_date ? @title = "Order" : @title = "Shopping Cart"
+    @contents = @order.order_contents.includes(:product)
+    @title = "Order"
   end
 
   def new
@@ -36,15 +37,11 @@ class Admin::OrdersController < AdminController
   end
 
   def edit
+    @user = User.where(id: params[:user_id]).includes(:addresses => [:city, :state]).first
+    @order = Order.where(id: params[:id]).includes(:order_contents => :product).first
   end
 
   def update
-    if @order.checkout_date.nil? && params[:order][:status] == 'PLACED'
-      @order.checkout_date = Time.now
-    elsif @order.checkout_date && params[:order][:status] == 'UNPLACED'
-      @order.checkout_date = nil
-    end
-
     if @order.update(order_params)
       redirect_to admin_user_order_url(@user, @order), notice: 'Order successfully saved.'
     else

@@ -7,7 +7,6 @@
       <th>City</th>
       <th>State</th>
       <th>Total Value</th>
-      <th>Status</th>
       <th>Date Placed</th>
       <th>Show</th>
       <th>Edit</th>
@@ -27,14 +26,7 @@
         <td><%= order.shipping_address.try(:city).try(:name) %></td>
         <td><%= order.shipping_address.try(:state).try(:abbreviation) %></td>
         <td><%= number_to_currency order.order_value %></td>
-        <td>
-          <% if order.checkout_date %>
-            <span class="text-success">PLACED</span>
-          <% else %>
-            <span class="text-danger">UNPLACED</span>
-          <% end %>
-        </td>
-        <td><%= order.checkout_date.try(:stamp, '12/31/2015') %></td>
+        <td><%= order.created_at.stamp('12/31/2015') %></td>
         <% if order.user %>
           <td><%= link_to 'show', admin_user_order_path(order.user, order) %></td>
           <td><%= link_to 'edit', edit_admin_user_order_path(order.user, order) %></td>

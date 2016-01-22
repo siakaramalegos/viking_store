@@ -1,11 +1,10 @@
 class User < ActiveRecord::Base
-  before_destroy :delete_carts
-
   has_many :addresses, dependent: :destroy
   accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: proc { |attributes| deep_blank?(attributes) }
 
   has_many :credit_cards, dependent: :destroy
   has_many :orders, dependent: :nullify
+  has_many :carts, dependent: :destroy
 
   # TODO: create last_order association to reduce N+1?
   # has_one :last_order, class_name: 'Order', order: 'checkout_date DESC', limit: 1
@@ -38,7 +37,7 @@ class User < ActiveRecord::Base
   end
 
   def last_order
-    self.orders.completed.order("checkout_date DESC").limit(1).first
+    self.orders.order("checkout_date DESC").limit(1).first
   end
 
   # Join clause to join users with order_totals table
@@ -57,11 +56,5 @@ class User < ActiveRecord::Base
 
   def self.get_highest_aggregation_user(aggregator)
     User.select("users.first_name, users.last_name, #{aggregator}(ot.revenue) as amount").joins(user_order_totals_join).group("users.id").order("amount DESC").limit(1)[0]
-  end
-
-  private
-
-  def delete_carts
-    self.orders.carts.destroy_all
   end
 end

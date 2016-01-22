@@ -32,7 +32,7 @@ class Admin::DashboardController < AdminController
     else
       {
           num_users: User.all.count,
-          num_orders: Order.completed.count,
+          num_orders: Order.all.count,
           num_products: Product.all.count,
           total_revenue: Order.get_revenue
       }

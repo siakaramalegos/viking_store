@@ -7,4 +7,15 @@ class Cart < ActiveRecord::Base
   has_many :products, through: :order_contents
 
   validates_uniqueness_of :user_id
+
+  def add_product(product_id, quantity = 1)
+    product = Product.find(product_id)
+    current_item = order_contents.find_by(product_id: product.id)
+    if current_item
+      current_item.quantity += quantity
+    else
+      current_item = order_contents.build(product: product, price: product.price, quantity: quantity)
+    end
+    current_item
+  end
 end

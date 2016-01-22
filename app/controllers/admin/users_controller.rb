@@ -5,7 +5,7 @@ class Admin::UsersController < AdminController
 
   def index
     @users = User.includes(:default_billing_address => [:city, :state])
-    @counts = Order.completed.group(:user_id).count
+    @counts = Order.group(:user_id).count
     # @last_checkouts = Order.select('user_id, MAX(checkout_date)').group(:user_id).where('checkout_date IS NOT NULL')
   end
 

@@ -12,21 +12,21 @@ module CurrentCart
 
   def combine_carts(user)
     user = current_user
-    user_carts = user.orders.where(checkout_date: nil)
-    session_cart = Order.where(id: session[:cart_id]).first
+    saved_carts = user.carts
+    session_cart = Cart.where(id: session[:cart_id]).first
 
     if session_cart && session_cart.user_id.nil? && user_carts.present?
       session_cart.user_id = current_user.id
       session_cart.save
 
-      user_carts.each do |cart|
+      saved_carts.each do |cart|
         cart.order_contents.each do |item|
           moved_item = session_cart.add_product(item.product_id, item.quantity)
           moved_item.save
         end
       end
 
-      user_carts.destroy_all
+      saved_carts.destroy_all
 
     elsif user_carts.present?
       session[:cart_id] = user_carts.first.id

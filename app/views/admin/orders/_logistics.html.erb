@@ -10,7 +10,7 @@
   <br>
 
   <dt>Date Placed:</dt>
-  <dd><%= @order.checkout_date.try(:stamp, '12/31/2015') %></dd>
+  <dd><%= @order.created_at.stamp('12/31/2015') %></dd>
 
   <dt># Products:</dt>
   <dd><%= @order.order_quantity %></dd>
@@ -21,18 +21,6 @@
 
 <p>
   <%= link_to 'Edit Customer Profile', edit_admin_user_path(@user) %>
-</p>
-<br>
-
-<h4>Order Status</h4>
-<p>
-  <strong class="order-status">
-    <% if @order.checkout_date %>
-      <span class="text-success">PLACED</span>
-    <% else %>
-      <span class="text-danger">UNPLACED</span>
-    <% end %>
-  </strong>
 </p>
 <br>
 

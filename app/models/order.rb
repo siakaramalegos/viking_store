@@ -18,11 +18,8 @@ class Order < ActiveRecord::Base
   # validates_associated :billing_id, :shipping_id, inclusion: {in: user.address_ids}
   # validates_associated :credit_card_id, inclusion: {in: user.credit_card_ids}
 
-  scope :days_ago, -> (days_past = 7) { where("checkout_date >= ?", days_past.days.ago) }
-  scope :day_range, -> (start_day, end_day) {where("checkout_date >= ? AND checkout_date <= ?", start_day.days.ago, end_day.days.ago)}
-
-  scope :completed, -> { where("checkout_date IS NOT NULL")}
-  scope :carts, -> { where("checkout_date IS NULL") }
+  scope :days_ago, -> (days_past = 7) { where("orders.created_at >= ?", days_past.days.ago) }
+  scope :day_range, -> (start_day, end_day) {where("orders.created_at >= ? AND created_at <= ?", start_day.days.ago, end_day.days.ago)}
 
   def order_value
     self.order_contents.select("SUM(quantity * price)")[0].sum
@@ -32,27 +29,12 @@ class Order < ActiveRecord::Base
     self.order_contents.select("SUM(quantity)")[0].sum
   end
 
-  def status
-    checkout_date ? 'PLACED' : 'UNPLACED'
-  end
-
-  def add_product(product_id, quantity = 1)
-    product = Product.find(product_id)
-    current_item = order_contents.find_by(product_id: product.id)
-    if current_item
-      current_item.quantity += quantity
-    else
-      current_item = order_contents.build(product: product, price: product.price, quantity: quantity)
-    end
-    current_item
-  end
-
   def self.get_orders_by_time(time_frame)
     if time_frame == 'day'
-      date_field = "o.checkout_date"
+      date_field = "o.created_at"
       days_ago = 7
     elsif time_frame == 'week'
-      date_field = "date_trunc('week', o.checkout_date)"
+      date_field = "date_trunc('week', o.created_at)"
       days_ago = 49
     end
 
@@ -63,7 +45,7 @@ class Order < ActiveRecord::Base
       SELECT date(#{date_field}) as date, COUNT(DISTINCT o.id) as quantity, SUM(oc.quantity * oc.price) as value
       FROM orders o
         JOIN order_contents oc ON oc.order_id = o.id
-      WHERE date(o.checkout_date) >= date(?)
+      WHERE date(o.created_at) >= date(?)
       GROUP BY date
       ORDER BY date DESC
       LIMIT 7"
@@ -86,7 +68,7 @@ class Order < ActiveRecord::Base
       }
     else
       {
-        num_orders: Order.completed.count,
+        num_orders: Order.all.count,
         total_revenue: Order.get_revenue(days_ago),
         avg_order_value: Order.get_aggregation_order('AVG'),
         max_order_value: Order.get_aggregation_order('MAX')
@@ -98,9 +80,9 @@ class Order < ActiveRecord::Base
     select_revenue = "SUM(oc.price * oc.quantity) as revenue"
     join = "JOIN order_contents oc ON oc.order_id = orders.id"
     if days_ago
-      relation = Order.select(select_revenue).joins(join).days_ago(days_ago).completed
+      relation = Order.select(select_revenue).joins(join).days_ago(days_ago)
     else
-      relation = Order.select(select_revenue).joins(join).completed
+      relation = Order.select(select_revenue).joins(join)
     end
     revenue = relation[0].revenue
     revenue ? revenue : 0
@@ -127,7 +109,7 @@ class Order < ActiveRecord::Base
     "SELECT o.id, o.user_id, SUM(oc.price * oc.quantity) as revenue
       FROM orders o
         JOIN order_contents oc ON oc.order_id = o.id
-      WHERE o.checkout_date #{where_clause}
+      WHERE o.created_at #{where_clause}
       GROUP BY o.id"
   end
 

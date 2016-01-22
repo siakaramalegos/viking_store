@@ -13,7 +13,7 @@ namespace :db do
 
     # Blow away the existing data
     puts "Removing old data..."
-    tables = [OrderContent, Order, CreditCard, Address, Product, User, Category, City]
+    tables = [OrderContent, Order, Cart, CreditCard, Address, Product, User, Category, City]
 
     tables.each do |table|
       table.destroy_all
@@ -54,7 +54,7 @@ namespace :db do
     end
     days_ago_arr.shuffle!
 
-    User.populate(MULTIPLIER * 20) do |user|
+    User.populate(MULTIPLIER * 22) do |user|
       user.email = Faker::Internet.email
       user.first_name = Faker::Name.first_name
       user.last_name = Faker::Name.last_name
@@ -109,14 +109,10 @@ namespace :db do
 
 
 
-    # Orders and carts
+    # Orders
     puts "Creating orders and associated contents..."
     product_range = (Product.first.id..Product.last.id)
     Order.populate(MULTIPLIER * 20) do |order|
-      # Set 2/3 as completed orders
-      if rand(1..3) != 3
-        order.checkout_date = Faker::Time.between(DateTime.now - days_ago_arr.pop, DateTime.now)
-      end
       address = Address.all.sample
       user = User.find(address.user_id)
       order.user_id = user.id
@@ -134,6 +130,28 @@ namespace :db do
 
     end # Order
     puts "Orders with contents created.\n\n"
+
+
+
+
+    # Carts
+    puts "Creating carts and associated contents..."
+
+    User.all.each do |user|
+      next if rand(1..3) != 3
+      Cart.populate(1) do |cart|
+        cart.user_id = user.id
+
+        OrderContent.populate(1..5) do |item|
+          product = Product.find(rand(product_range))
+          item.product_id = product.id
+          item.quantity = rand(1..3)
+          item.price = product.price
+          item.cart_id = cart.id
+        end # Line Item
+      end # Cart
+    end # User
+    puts "Carts with contents created.\n\n"
 
     puts "ALL DONE! ...in #{Time.now - start_time} seconds."
   end
