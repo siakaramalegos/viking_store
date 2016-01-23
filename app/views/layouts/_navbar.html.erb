@@ -21,7 +21,7 @@
       </div>
 
       <div class="nav-links-right col-xs-2">
-        <%= link_to 'Your cart', '#', class: "navbar-link" %><br>
+        <%= link_to 'Your cart', edit_cart_path, class: "navbar-link" %><br>
 
         <!-- Login in/out links -->
         <% if signed_in_user? %>

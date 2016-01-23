@@ -6,9 +6,9 @@ Rails.application.routes.draw do
   root 'products#index'
 
   resources :order_contents, only: [:create]
-  get 'cart' => 'cart#edit'
   resources :orders, only: [:update]
   resource :user, except: [:show]
+  resource :cart, only: [:edit, :update]
 
   resource :session, :only => [:new, :create, :destroy]
   get 'sign_in' => 'sessions#new'

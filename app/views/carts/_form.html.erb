@@ -1,0 +1,64 @@
+<%= form_for @cart do |cart_fields| %>
+
+  <%= cart_fields.fields_for :order_contents do |item_fields| %>
+    <div class="row">
+
+      <div class="col-sm-7">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <span class="pull-right">
+              <%= number_to_currency item_fields.object.price %>
+            </span>
+            <h4><%= item_fields.object.product.name %></h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-5">
+        <div class="panel panel-default">
+          <div class="panel-body">
+
+            <div class="row text-center">
+              <div class="col-xs-6">
+                <p><u><strong>Quantity</strong></u></p>
+                <p>
+                  <%= item_fields.number_field :quantity, class: 'form-control text-center' %>
+                </p>
+              </div>
+
+              <div class="col-xs-6">
+                <p><u><strong>Total Price</strong></u></p>
+                <p><strong><%= number_to_currency item_fields.object.price * item_fields.object.quantity %></strong></p>
+              </div>
+            </div>
+
+            <p>
+              <%= item_fields.check_box :_destroy %>
+              <%= item_fields.label :_destroy, "Remove Item" %>
+            <p>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  <% end %>
+
+  <div class="row text-center">
+    <div class="col-sm-7">
+
+      <div class="panel panel-warning">
+        <div class="panel-heading">
+          <p><u><strong>TOTAL</strong></u></p>
+          <p><strong><%= number_to_currency @cart.order_value %></strong></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-5">
+      <%= link_to 'Update Contents', "#", class: 'btn btn-default btn-block' %>
+      <%= link_to 'Check Out', "#", class: 'btn btn-primary btn-block' %>
+    </div>
+  </div>
+
+<% end %>

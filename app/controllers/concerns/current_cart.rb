@@ -4,9 +4,17 @@ module CurrentCart
   private
 
   def set_cart
-    @cart = Order.find(session[:cart_id])
+    @cart = Cart.find(session[:cart_id])
   rescue ActiveRecord::RecordNotFound
-    @cart = Order.create
+    if signed_in_user?
+      if current_user.carts.present?
+        @cart = current_user.carts.first
+      else
+        @cart = Cart.create(user_id: current_user.id)
+      end
+    else
+      @cart = Cart.create
+    end
     session[:cart_id] = @cart.id
   end
 
