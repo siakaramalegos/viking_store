@@ -49,15 +49,15 @@
 
       <div class="panel panel-warning">
         <div class="panel-heading">
-          <p><u><strong>TOTAL</strong></u></p>
-          <p><strong><%= number_to_currency @cart.order_value %></strong></p>
+          <p><u><strong>SUBTOTAL</strong></u></p>
+          <p><strong><%= number_to_currency @cart.subtotal %></strong></p>
         </div>
       </div>
     </div>
 
     <div class="col-sm-5">
       <%= cart_fields.submit 'Update Contents', class: 'btn btn-default btn-block' %>
-      <%= link_to 'Check Out', "#", class: 'btn btn-primary btn-block' %>
+      <%= link_to 'Check Out', new_order_path, class: 'btn btn-primary btn-block' %>
     </div>
   </div>
 

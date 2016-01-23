@@ -1,0 +1,59 @@
+<h2 class="text-center">Review + Complete</h2>
+<br>
+
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Total Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @cart.order_contents.each do |item| %>
+      <tr>
+        <td><%= item.product.name %></td>
+        <td class="text-center"><%= item.quantity %></td>
+        <td class="text-right"><%= number_to_currency item.price %></td>
+        <td class="text-right"><%= number_to_currency (item.price * item.quantity) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="row">
+
+  <div class="col-xs-6">
+    <p><%= link_to 'Edit Cart', edit_cart_path %></p>
+    <%# TODO: create cart delete method and update link below %>
+    <p><%= link_to 'Delete Cart', '#' %></p>
+  </div>
+
+  <div class="col-xs-6">
+    <h4>
+      <span class="pull-right">
+        <%= number_to_currency @cart.subtotal %>
+      </span>
+      Subtotal
+    </h4>
+    <h4>
+      <span class="pull-right">
+        <%= number_to_currency @cart.shipping %>
+      </span>
+      Shipping
+    </h4>
+    <h4>
+      <span class="pull-right">
+        <%= number_to_currency @cart.tax %>
+      </span>
+      Tax
+    </h4>
+    <h3>
+      <span class="pull-right">
+        <%= number_to_currency @cart.grand_total %>
+      </span>
+      Total
+    </h3>
+  </div>
+</div>

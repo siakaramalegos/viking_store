@@ -7,6 +7,7 @@ class CartsController < ApplicationController
   end
 
   def update
+    # TODO: if item quantity = 0, remove from cart
     if @cart.update(cart_params)
       redirect_to edit_cart_url, notice: 'Cart successfully updated.'
     else

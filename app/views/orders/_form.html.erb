@@ -1,0 +1,53 @@
+<%= form_for @order do |order_fields| %>
+  <div class="col-sm-6">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <h2 class="text-center">Shipping + Billing</h2>
+        <br>
+
+        <div class="form-group">
+          <h4>Shipping Address</h4>
+          <%= field_with_errors(@order, :shipping_id) %>
+          <%= order_fields.collection_select :shipping_id, @user.addresses, :id, :one_line, {selected: @user.shipping_id, prompt: "Select a shipping address"}, {class: "form-control"} %>
+        </div>
+
+        <br>
+        <div class="form-group">
+          <h4>Billing Address</h4>
+          <%= field_with_errors(@order, :billing_id) %>
+          <%= order_fields.collection_select :billing_id, @user.addresses, :id, :one_line, {selected: @user.billing_id, prompt: "Select a billing address"}, {class: "form-control"} %>
+        </div>
+
+        <br>
+        <h4>Payment</h4>
+        <div class="form-group">
+          <p class="text-muted">Use a saved credit card:</p>
+          <%= field_with_errors(@order, :credit_card_id) %>
+          <%= order_fields.collection_select :credit_card_id, @user.credit_cards, :id, :short_description, {prompt: "Select a saved credit card"}, {class: "form-control"} %>
+        </div>
+
+          <%# TODO: add new credit card %>
+        <div class="form-group">
+          <p class="text-muted">Or add a new credit card:</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6">
+    <div class="panel panel-default" id="review-cart">
+      <div class="panel-body">
+        <%= render 'cart' %>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <h2 class="text-center">Place Your Order</h2>
+        <br>
+        <%= order_fields.submit 'Place Order!', class: 'btn btn-primary btn-block btn-lg' %>
+        <br>
+      </div>
+    </div>
+  </div>
+<% end %>

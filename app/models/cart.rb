@@ -19,7 +19,19 @@ class Cart < ActiveRecord::Base
     current_item
   end
 
-  def order_value
-    self.order_contents.select("SUM(quantity * price)")[0].sum
+  def subtotal
+    order_contents.select("SUM(quantity * price)")[0].sum.round(2)
+  end
+
+  def tax
+    (subtotal * 0.1).round(2)
+  end
+
+  def shipping
+    (subtotal * 0.1).round(2)
+  end
+
+  def grand_total
+    subtotal + tax + shipping
   end
 end

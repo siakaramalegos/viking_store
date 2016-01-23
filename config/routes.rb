@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   root 'products#index'
 
   resources :order_contents, only: [:create]
-  resources :orders, only: [:update]
+  resources :orders, only: [:new, :create]
   resource :user, except: [:show]
   resource :cart, only: [:edit, :update]
 
