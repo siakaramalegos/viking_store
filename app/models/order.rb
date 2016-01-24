@@ -1,6 +1,8 @@
 class Order < ActiveRecord::Base
   belongs_to :user
   belongs_to :credit_card
+  accepts_nested_attributes_for :credit_card, reject_if: :all_blank
+
   belongs_to :shipping_address, foreign_key: :shipping_id, class_name: 'Address'
   belongs_to :billing_address, foreign_key: :billing_id, class_name: 'Address'
 

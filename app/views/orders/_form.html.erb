@@ -21,14 +21,63 @@
         <br>
         <h4>Payment</h4>
         <div class="form-group">
-          <p class="text-muted">Use a saved credit card:</p>
+          <p class="text-muted"><em>Use a saved credit card:</em></p>
           <%= field_with_errors(@order, :credit_card_id) %>
           <%= order_fields.collection_select :credit_card_id, @user.credit_cards, :id, :short_description, {prompt: "Select a saved credit card"}, {class: "form-control"} %>
         </div>
 
           <%# TODO: add new credit card %>
         <div class="form-group">
-          <p class="text-muted">Or add a new credit card:</p>
+          <p class="text-muted"><em>Or add a new credit card:</em></p>
+          <%= order_fields.fields_for :credit_card do |cc_fields| %>
+            <div class="well">
+              <div class="form-group">
+                <%= cc_fields.label :nickname %>
+                <%= field_with_errors(cc_fields.object, :nickname) %>
+                <%= cc_fields.text_field :nickname, class: 'form-control', placeholder: 'My AMEX', value: nil %>
+              </div>
+
+              <div class="form-group">
+                <%= cc_fields.label :name_on_card %>
+                <%= field_with_errors(cc_fields.object, :name_on_card) %>
+                <%= cc_fields.text_field :name_on_card, class: 'form-control', placeholder: 'Jane Smith' %>
+              </div>
+
+              <div class="form-group">
+                <%= cc_fields.label :card_number %>
+                <%= field_with_errors(cc_fields.object, :card_number) %>
+                <%= cc_fields.text_field :card_number, class: 'form-control', placeholder: '4567 1234 0000 5555' %>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-4">
+
+                  <div class="form-group">
+                    <%= cc_fields.label :brand %>
+                    <%= field_with_errors(cc_fields.object, :brand) %>
+                    <%= cc_fields.select :brand, CreditCard::BRANDS, {include_blank: 'Select:'}, {class: 'form-control'} %>
+                  </div>
+                </div>
+
+                <div class="col-xs-4">
+                  <div class="form-group">
+                    <%= cc_fields.label :exp_month %>
+                    <%= field_with_errors(cc_fields.object, :exp_month) %>
+                    <%= cc_fields.select :exp_month, CreditCard::MONTHS, {include_blank: 'Month:'}, {class: 'form-control'} %>
+                  </div>
+                </div>
+
+                <div class="col-xs-4">
+                  <div class="form-group">
+                    <%= cc_fields.label :exp_year %>
+                    <%= field_with_errors(cc_fields.object, :exp_year) %>
+                    <%= cc_fields.select :exp_year, CreditCard::YEARS, {include_blank: 'Year:'}, {class: 'form-control'} %>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>
